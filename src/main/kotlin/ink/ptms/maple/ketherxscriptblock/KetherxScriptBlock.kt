@@ -21,6 +21,7 @@ object KetherxScriptBlock : Plugin() {
 
     @TSchedule
     fun load() {
+        scripts.clear()
         File(this.plugin.dataFolder, "scripts").listFiles()?.forEach { file ->
             scripts.add(ScriptData.fromJson(Files.readFromFile(file) ?: return@forEach))
         }
