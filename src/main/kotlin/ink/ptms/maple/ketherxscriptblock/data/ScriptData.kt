@@ -18,7 +18,7 @@ class ScriptData(
     @Expose
     val location: Location,
     @Expose
-    var type: ScriptType = ScriptType.INTERACT,
+    var type: ScriptType = ScriptType.NULL,
     @Expose
     var action: MutableList<String> = ArrayList(),
     @Expose
@@ -56,10 +56,10 @@ class ScriptData(
                 it.isCancelled = true
                 when (it.rawSlot) {
                     10 -> {
-                        type = if (type == ScriptType.INTERACT) {
-                            ScriptType.WALK
-                        } else {
-                            ScriptType.INTERACT
+                        type = when (type) {
+                            ScriptType.NULL -> ScriptType.INTERACT
+                            ScriptType.INTERACT -> ScriptType.WALK
+                            ScriptType.WALK -> ScriptType.NULL
                         }
                         openEdit(player)
                     }
@@ -81,7 +81,7 @@ class ScriptData(
                     14 -> {
                         player.closeInventory()
                         player.info("请编辑书籍,编辑后点击&f完成&7按钮即可&f保存&7! 保存后书本可丢弃")
-                        Features.inputBook(player, "编辑条件", false, action) { book ->
+                        Features.inputBook(player, "编辑条件", false, condition) { book ->
                             player.info("编辑完成!")
                             Items.replaceLore(player.inventory.itemInMainHand, "Input", "Input!!")
                             if (book[0] == "clear") {

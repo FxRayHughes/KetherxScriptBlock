@@ -1,8 +1,10 @@
 package ink.ptms.maple.ketherxscriptblock
 
 import ink.ptms.maple.ketherxscriptblock.data.ScriptData
+import ink.ptms.maple.ketherxscriptblock.data.ScriptType
 import io.izzel.taboolib.module.command.base.*
 import io.izzel.taboolib.module.tellraw.TellrawJson
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
@@ -19,7 +21,7 @@ class Command : BaseMainCommand(), Helper {
             sender.info("服务器拥有的脚本:")
             KetherxScriptBlock.scripts.forEach {
                 TellrawJson.create().append("§8 - §f${Utils.fromLocation(it.location)}").hoverText("点击编辑脚本方块")
-                    .clickCommand("/ketherxscriptblock editThe ${Utils.fromLocation(it.location)}")
+                    .clickSuggest("/ketherxscriptblock editThe ${Utils.fromLocation(it.location)}")
                     .send(sender)
             }
         }
@@ -117,6 +119,43 @@ class Command : BaseMainCommand(), Helper {
             block.display()
             blockData.openEdit(player)
             sender.info("正在编辑脚本.")
+        }
+    }
+
+    @SubCommand(description = "激活定位置脚本", permission = "*")
+    var run: BaseSubCommand = object : BaseSubCommand() {
+        override fun getArguments(): Array<Argument> {
+            return arrayOf(Argument("玩家ID"), Argument("脚本文件名"))
+        }
+
+        override fun onCommand(sender: CommandSender, command: Command, s: String, args: Array<String>) {
+            val player = Bukkit.getPlayer(args[0])
+            if (player == null) {
+                sender.error("目标不存在或不在线!")
+                return
+            }
+            val block = Utils.toLocation(args[1]).block
+            if (block.type == Material.AIR) {
+                sender.error("无效的方块.")
+                return
+            }
+            val blockData = KetherxScriptBlock.getScript(block.location)
+            if (blockData == null) {
+                block.display()
+                sender.error("该方块不存在脚本.")
+                return
+            }
+            blockData.run {
+                if (Cooldown.isCooldown(player.name, Utils.fromLocation(this.location))) {
+                    return@run
+                }
+                Utils.check(player, this.condition).thenAccept {
+                    if (it) {
+                        Utils.eval(player, this.action)
+                        Cooldown.toCooldown(player.name, Utils.fromLocation(this.location), this.cooldown.toInt())
+                    }
+                }
+            }
         }
     }
 
