@@ -1,22 +1,6 @@
-# TabooLib SDK
+# KetherxScriptBlock
 
-## Settings
-```groovy
-taboolib {
-    tabooLibVersion = '5.55'
-    loaderVersion = '2.12'
-    classifier = null
-    // relocate package
-    relocate('io.izzel.taboolib', 'ink.ptms.taboolib')
-    // built-in
-    builtin = true
-}
-```
+次时代脚本方块插件
 
-## Release Source Code
-````groovy
-processResources {
-    from(sourceSets.main.allSource) {
-    exclude 'plugin.yml'
-}
-````
+## 使用教程
+有✋🧔✨
