@@ -22,26 +22,6 @@ object Utils {
         }
     }
 
-    fun check(player: Player, condition: List<String>): CompletableFuture<Boolean> {
-        return if (condition.isEmpty()) {
-            CompletableFuture.completedFuture(true)
-        } else {
-            try {
-                KetherShell.eval(condition) {
-                    sender = player
-                }.thenApply {
-                    Coerce.toBoolean(it)
-                }
-            } catch (e: LocalizedException) {
-                e.print()
-                CompletableFuture.completedFuture(false)
-            } catch (e: Throwable) {
-                e.printStackTrace()
-                CompletableFuture.completedFuture(false)
-            }
-        }
-    }
-
     fun LocalizedException.print() {
         println("[KetherxScriptBlock] Unexpected exception while parsing kether shell:")
         localizedMessage.split("\n").forEach {
@@ -64,7 +44,7 @@ object Utils {
         }
     }
 
-    fun String.asDouble(): Double {
+    private fun String.asDouble(): Double {
         return NumberConversions.toDouble(this)
     }
 }

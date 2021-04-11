@@ -149,12 +149,8 @@ class Command : BaseMainCommand(), Helper {
                 if (Cooldown.isCooldown(player.name, Utils.fromLocation(this.location))) {
                     return@run
                 }
-                Utils.check(player, this.condition).thenAccept {
-                    if (it) {
-                        Utils.eval(player, this.action)
-                        Cooldown.toCooldown(player.name, Utils.fromLocation(this.location), this.cooldown.toInt())
-                    }
-                }
+                Utils.eval(player, this.action)
+                Cooldown.toCooldown(player.name, Utils.fromLocation(this.location), this.cooldown.toInt())
             }
         }
     }

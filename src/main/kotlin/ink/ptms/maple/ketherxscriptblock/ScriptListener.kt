@@ -35,12 +35,8 @@ class ScriptListener : Listener {
                 ) {
                     return@run
                 }
-                Utils.check(event.player, this.condition).thenAccept {
-                    if (it) {
-                        Utils.eval(event.player, this.action)
-                        Cooldown.toCooldown(event.player.name, Utils.fromLocation(this.location), this.cooldown.toInt())
-                    }
-                }
+                Utils.eval(event.player, this.action)
+                Cooldown.toCooldown(event.player.name, Utils.fromLocation(this.location), this.cooldown.toInt())
             }
         }
     }
@@ -61,12 +57,8 @@ class ScriptListener : Listener {
             ) {
                 return@run
             }
-            Utils.check(event.player, this.condition).thenAccept {
-                if (it) {
-                    Utils.eval(event.player, this.action)
-                    Cooldown.toCooldown(event.player.name, Utils.fromLocation(this.location), this.cooldown.toInt())
-                }
-            }
+            Utils.eval(event.player, this.action)
+            Cooldown.toCooldown(event.player.name, Utils.fromLocation(this.location), this.cooldown.toInt())
         }
     }
 
